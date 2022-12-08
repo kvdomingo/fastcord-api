@@ -1,0 +1,46 @@
+networks:
+  gateway:
+    external: true
+
+volumes:
+  cache:
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    image: kvdomingo/fastcord-api:latest
+    env_file: .env
+    volumes:
+      - .:/backend
+    depends_on:
+      - redis
+
+  proxy:
+    image: bitnami/nginx:1.21.6
+    environment:
+      - NGINX_HTTP_PORT_NUMBER=8000
+    volumes:
+      - ./proxy:/opt/bitnami/nginx/conf/server_blocks:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastcord.rule=Host(`fastcord.localhost`)"
+      - "traefik.http.routers.fastcord.entrypoints=http"
+      - "traefik.docker.network=gateway"
+      - "traefik.http.services.fastcord.loadbalancer.server.port=8000"
+    restart: unless-stopped
+    networks:
+      - default
+      - gateway
+    depends_on:
+      - backend
+
+  redis:
+    image: bitnami/redis:6.2
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_IO_THREADS=2
+      - REDIS_IO_THREADS_DO_READS=true
+    volumes:
+      - cache:/bitnami/redis/data

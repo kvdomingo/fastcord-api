@@ -1,34 +1,28 @@
-networks:
-  gateway:
-    external: true
-
-volumes:
-  cache:
-
 services:
   backend:
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile.dev
     image: kvdomingo/fastcord-api:latest
     env_file: .env
     volumes:
       - .:/backend
     depends_on:
-      - redis
+      - db
 
   proxy:
     image: bitnami/nginx:1.21.6
     environment:
-      - NGINX_HTTP_PORT_NUMBER=8000
+      NGINX_HTTP_PORT_NUMBER: ${PORT}
     volumes:
       - ./proxy:/opt/bitnami/nginx/conf/server_blocks:ro
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.fastcord.rule=Host(`fastcord.localhost`)"
+      - "traefik.http.routers.fastcord.rule=Host(`api.fastcord.localhost`)"
       - "traefik.http.routers.fastcord.entrypoints=http"
+      - "traefik.http.routers.fastcord.middlewares=secured@file"
       - "traefik.docker.network=gateway"
-      - "traefik.http.services.fastcord.loadbalancer.server.port=8000"
+      - "traefik.http.services.fastcord.loadbalancer.server.port=${PORT}"
     restart: unless-stopped
     networks:
       - default
@@ -36,11 +30,42 @@ services:
     depends_on:
       - backend
 
-  redis:
-    image: bitnami/redis:6.2
+  db:
+    image: bitnami/mongodb:5.0.18
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_IO_THREADS=2
-      - REDIS_IO_THREADS_DO_READS=true
+      MONGODB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+      MONGODB_USERNAME: ${MONGODB_USERNAME}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
     volumes:
-      - cache:/bitnami/redis/data
+      - db-data:/bitnami/mongodb
+    restart: unless-stopped
+
+  express:
+    image: mongo-express:0.54
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: false
+      ME_CONFIG_MONGODB_AUTH_DATABASE: ${MONGODB_DATABASE}
+      ME_CONFIG_MONGODB_AUTH_USERNAME: ${MONGODB_USERNAME}
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: ${MONGODB_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: db
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastcord-express.rule=Host(`express.fastcord.localhost`)"
+      - "traefik.http.routers.fastcord-express.entrypoints=http"
+      - "traefik.http.routers.fastcord-express.middlewares=secured@file"
+      - "traefik.docker.network=gateway"
+      - "traefik.http.services.fastcord-express.loadbalancer.server.port=8081"
+    networks:
+      - default
+      - gateway
+
+networks:
+  gateway:
+    external: true
+
+volumes:
+  db-data: {}

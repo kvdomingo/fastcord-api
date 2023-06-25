@@ -1,9 +1,9 @@
-FROM python:3.10-bullseye
+FROM python:3.10-bullseye AS deps
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
-ENV POETRY_VERSION 1.2.2
+ENV POETRY_VERSION 1.5.1
 
 WORKDIR /tmp
 
@@ -13,6 +13,8 @@ COPY poetry.lock pyproject.toml ./
 
 RUN poetry install --no-interaction --no-ansi
 
+FROM deps AS dev
+
 WORKDIR /backend
 
-ENTRYPOINT [ "flask", "run", "--host", "0.0.0.0", "--port", "5000", "--debugger", "--with-threads", "--reload" ]
+ENTRYPOINT [ "uvicorn", "fastcord.app:app", "--reload", "--host", "0.0.0.0", "--port", "5000"]

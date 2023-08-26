@@ -1,8 +1,7 @@
-from mongoengine import connect
+from sqlalchemy import create_engine
 
-from fastcord.config import get_settings
+from fastcord.settings import get_settings
 
 settings = get_settings()
 
-
-connect(settings.DATABASE_URL)
+engine = create_engine(settings.DATABASE_URL, echo=settings.PYTHON_ENV == "development")

@@ -41,3 +41,13 @@ tasks:
     desc: Stop and remove all containers
     cmds:
       - docker compose --project-name {{.NAME}} down --remove-orphans {{.CLI_ARGS}}
+
+  makemigrations:
+    desc: Create migration file
+    cmds:
+      - docker compose --project-name {{.NAME}} exec backend alembic revision --autogenerate -m {{.CLI_ARGS}}
+
+  migrate:
+    desc: Create migration file
+    cmds:
+      - docker compose --project-name {{.NAME}} exec backend alembic upgrade head

@@ -1,15 +1,11 @@
 from datetime import datetime
-from enum import Enum
 
 from sqlalchemy import ForeignKey, String, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from fastcord.enums import ChannelType
+
 from .base import Base, generate_uuid
-
-
-class ChannelType(Enum):
-    TEXT = "TEXT"
-    VOICE = "VOICE"
 
 
 class Channel(Base):

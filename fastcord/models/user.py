@@ -1,5 +1,4 @@
 from datetime import datetime
-from enum import Enum
 from random import randint
 from typing import Optional, Self
 
@@ -7,18 +6,13 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Table, UniqueConstra
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
+from fastcord.enums import AvailabilityStatus
+
 from .base import Base, generate_uuid
 
 
 def generate_discriminator():
     return randint(0, 9999)
-
-
-class AvailabilityStatus(Enum):
-    ONLINE = "ONLINE"
-    DO_NOT_DISTURB = "DO_NOT_DISTURB"
-    IDLE = "IDLE"
-    OFFLINE = "OFFLINE"
 
 
 friendship_association_table = Table(

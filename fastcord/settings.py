@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     SENDGRID_API_KEY: str
+    CORS_ALLOWED_ORIGINS: list[str] = ["*"]
 
     class Config:
         env_file = ".env"

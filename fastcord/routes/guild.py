@@ -7,7 +7,11 @@ from sqlalchemy import text
 from fastcord.db import engine
 from fastcord.schemas import Guild
 
+from . import channel, channel_group
+
 router = APIRouter(prefix="/guild")
+router.include_router(channel_group.router)
+router.include_router(channel.router)
 
 
 @router.get("")

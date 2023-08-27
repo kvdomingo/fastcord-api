@@ -9,6 +9,7 @@
     created: "2023-08-26T17:31:56.316081"
     name: text channels
     guild_id: 4a851963-ee9e-4650-92c2-461e99f2864d
+    order: 1
 - id: 91a16ba5-1006-4f1c-ae0c-652aba9649de
   table: channel
   fields:
@@ -17,6 +18,7 @@
     type: TEXT
     guild_id: 4a851963-ee9e-4650-92c2-461e99f2864d
     channel_group_id: 7a839d4a-bd7d-40e6-86ad-e17022e81dd3
+    order: 2
 - id: 6a29bd18-b71a-4996-a4ff-97f25265281e
   table: channel
   fields:
@@ -25,3 +27,4 @@
     type: TEXT
     guild_id: 4a851963-ee9e-4650-92c2-461e99f2864d
     channel_group_id: 7a839d4a-bd7d-40e6-86ad-e17022e81dd3
+    order: 1

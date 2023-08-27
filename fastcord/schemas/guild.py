@@ -1,14 +1,11 @@
-from datetime import datetime
 from typing import Optional
 
-from pydantic import UUID4, AnyHttpUrl, BaseModel, ConfigDict, constr
+from pydantic import AnyHttpUrl, Field, constr
+
+from .base import BaseSchema
 
 
-class Guild(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: UUID4
-    created: datetime
+class Guild(BaseSchema):
     name: constr(min_length=3, max_length=64)
-    avatar: Optional[AnyHttpUrl]
-    banner: Optional[AnyHttpUrl]
+    avatar: Optional[AnyHttpUrl] = Field(default=None)
+    banner: Optional[AnyHttpUrl] = Field(default=None)

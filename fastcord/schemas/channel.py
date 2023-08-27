@@ -1,16 +1,12 @@
-from datetime import datetime
-
-from pydantic import UUID4, BaseModel, ConfigDict, constr
+from pydantic import UUID4, Field, constr
 
 from fastcord.enums import ChannelType
 
+from .base import BaseSchema
 
-class Channel(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
 
-    id: UUID4
-    created: datetime
+class Channel(BaseSchema):
     name: constr(min_length=3, max_length=32)
-    type: ChannelType
+    type: ChannelType = Field(default=ChannelType.TEXT)
     guild_id: UUID4
     channel_group_id: UUID4

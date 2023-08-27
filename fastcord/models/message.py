@@ -4,14 +4,12 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
-from .base import Base, generate_uuid
+from .base import BaseModel
 
 
-class Message(Base):
+class Message(BaseModel):
     __tablename__ = "message"
 
-    id: Mapped[str] = mapped_column(primary_key=True, default=generate_uuid, index=True)
-    created: Mapped[datetime] = mapped_column(server_default=func.now(), index=True)
     modified: Mapped[datetime] = mapped_column(
         default=datetime.utcnow, onupdate=func.now()
     )

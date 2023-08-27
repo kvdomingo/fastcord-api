@@ -1,9 +1,11 @@
 from datetime import datetime
 
-from pydantic import UUID4, BaseModel, constr
+from pydantic import UUID4, BaseModel, ConfigDict, constr
 
 
 class Message(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID4
     created: datetime
     modified: datetime

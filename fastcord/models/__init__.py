@@ -1,5 +1,6 @@
-from .base import Base
+from .base import Base, BaseModel
 from .channel import Channel
+from .channel_group import ChannelGroup
 from .emoji import Emoji
 from .guild import Guild
 from .message import Message

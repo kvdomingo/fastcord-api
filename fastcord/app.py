@@ -3,7 +3,7 @@ from fastapi.responses import PlainTextResponse
 
 from fastcord.routes import guild
 
-app = FastAPI()
+app = FastAPI(title="Fastcord API")
 app.include_router(guild.router)
 
 

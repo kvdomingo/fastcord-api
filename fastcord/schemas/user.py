@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import UUID4, AnyHttpUrl, BaseModel, EmailStr, conint, constr
+from pydantic import UUID4, AnyHttpUrl, BaseModel, ConfigDict, EmailStr, conint, constr
 
 from fastcord.enums import AvailabilityStatus
 
 
 class User(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: UUID4
     created: datetime
     name: Optional[constr(min_length=1, max_length=64)]

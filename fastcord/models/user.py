@@ -1,14 +1,12 @@
-from datetime import datetime
 from random import randint
 from typing import Optional, Self
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
 
 from fastcord.enums import AvailabilityStatus
 
-from .base import Base, generate_uuid
+from .base import Base, BaseModel
 
 
 def generate_discriminator():
@@ -24,7 +22,7 @@ friendship_association_table = Table(
 )
 
 
-class User(Base):
+class User(BaseModel):
     __tablename__ = "user"
     __table_args__ = (
         UniqueConstraint(
@@ -32,8 +30,6 @@ class User(Base):
         ),
     )
 
-    id: Mapped[str] = mapped_column(primary_key=True, default=generate_uuid, index=True)
-    created: Mapped[datetime] = mapped_column(server_default=func.now(), index=True)
     name: Mapped[Optional[str]] = mapped_column(String(64))
     email: Mapped[str] = mapped_column(String(256), unique=True, index=True)
     username: Mapped[str] = mapped_column(String(32))
